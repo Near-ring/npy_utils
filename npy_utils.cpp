@@ -44,7 +44,7 @@ void npy::parse_npy_header(FILE* fp, size_t& word_size, std::vector<size_t>& sha
     if (res != 11)
         throw std::runtime_error("parse_npy_header: failed in fread");
 
-    fgets(buffer, 256, fp);
+    auto _ = fgets(buffer, 256, fp);
 
     auto header = find_header_substring(buffer);
 
@@ -138,5 +138,5 @@ auto npy::load_npy_arr(const std::string& fname) -> std::tuple<std::unique_ptr<c
     const size_t nread = fread(arr.get(), 1, n_bytes, fp);
     if (nread != n_bytes)
         std::cerr << "load_the_npy_file: failed fread" << std::endl;
-    return std::make_tuple(arr, n_bytes, word_size);
+    return std::make_tuple(std::move(arr), n_bytes, word_size);
 }
